@@ -69,6 +69,7 @@
     <Compile Include="ChangeBook\BookInfo\Interface\IBookInfo.cs" />
     <Compile Include="ChangeBook\BookInfo\Interface\IFileInfo.cs" />
     <Compile Include="ChangeBook\FindBookFiles.cs" />
+    <Compile Include="ChangeBook\RenameBookFiles.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
