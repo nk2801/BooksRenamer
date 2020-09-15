@@ -37,6 +37,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -69,6 +71,7 @@
     <Compile Include="ChangeBook\BookInfo\Interface\IBookInfo.cs" />
     <Compile Include="ChangeBook\BookInfo\Interface\IFileInfo.cs" />
     <Compile Include="ChangeBook\FindBookFiles.cs" />
+    <Compile Include="ChangeBook\FindNewBookInfo.cs" />
     <Compile Include="ChangeBook\RenameBookFiles.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
