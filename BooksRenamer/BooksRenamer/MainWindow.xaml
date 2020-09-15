@@ -5,8 +5,122 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BooksRenamer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Books Renamer" Height="450" Width="800">
+
+    <Window.Resources>
+        <Style x:Key="CommonStyle" TargetType="FrameworkElement">
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="Label" BasedOn="{StaticResource CommonStyle}">
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource CommonStyle}">
+        </Style>
+        <Style TargetType="RadioButton" BasedOn="{StaticResource CommonStyle}">
+            <Setter Property="Height" Value="15"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource CommonStyle}">
+        </Style>
+    </Window.Resources>
+
     <Grid>
+        <Menu VerticalAlignment="Top" 
+              Height="25"></Menu>
+        <Grid VerticalAlignment="Stretch"
+              Margin="0 25">
+            <Grid.RowDefinitions>
+                <RowDefinition ></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <DockPanel Grid.ColumnSpan="3"
+                       VerticalAlignment="Top"
+                       LastChildFill="True">
+                <Label Content="Каталог" 
+                       DockPanel.Dock="Left"/>
+                <Button Content="Обзор"
+                        x:Name="btnOverview"                      
+                        Click="btnOverview_Click"
+                        Width="70"
+                        DockPanel.Dock="Right"/>
+                <TextBox x:Name="tbDirectory"
+                         Text=""/>
+            </DockPanel>
+
+            <StackPanel Orientation="Vertical" 
+                        Grid.Column="4"
+                        Grid.RowSpan="5">
+                <Button Content="Поиск книг по каталогу" 
+                        x:Name="btnSearchBooks" 
+                        Click="btnSearchBooks_Click"/>
+                <RadioButton Content="Только корневой каталог" 
+                             x:Name="rbtnOnlyRoot" 
+                             IsChecked="True"
+                             Checked="rbtnAllFolders_Checked"/>
+                <RadioButton Content="Проверить все подпапки" 
+                             x:Name="rbtnAlsoSubFolders"        
+                             IsChecked="False"
+                             Checked="rbtnAllFolders_Checked"/>
+                <Button Content="Поиск названий книг" 
+                        x:Name="btnSearchNewTitle"
+                        Click="btnSearchNewTitle_Click"/>
+                <Button Content="Переименовать книги"
+                        x:Name="btnRename"  
+                        Click="btnRename_Click"/>
+            </StackPanel>
+
+            <DataGrid x:Name="MainDataGrid" 
+                      Grid.Column="0" 
+                      Grid.ColumnSpan="3"
+                      Grid.Row="0" 
+                      Grid.RowSpan="5" 
+                      Margin="0 35 0 0"
+                      AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="Check"  Binding="{Binding Path=Checked}" Width="45"/>
+                    <DataGridTextColumn Header="Ошибка" Binding="{Binding Path=Exception}" Width="55" />
+                    <DataGridTextColumn Header="Каталог" Binding="{Binding Path=MainFolder}" Width="100" MaxWidth="200" />
+                    <DataGridTextColumn Header="Название файла" Binding="{Binding Path=FileName}" Width="*" />
+                    <DataGridTextColumn Header="Формат" Binding="{Binding Path=Extension}" Width="55" />
+                    <DataGridTextColumn Header="Название книги" Binding="{Binding Path=Title}" Width="*"/>
+                    <DataGridTextColumn Header="Автор" Binding="{Binding Path=Author}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
         
+        <StatusBar VerticalAlignment="Bottom"
+                   Height="25">
+            <StatusBarItem>
+                <TextBlock>Обработка запроса:</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem>
+                <ProgressBar x:Name="progressBar" 
+                             HorizontalAlignment="Left" 
+                             Height="18" 
+                             Width="150" 
+                             LargeChange="0" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock x:Name="pbItemsCount" 
+                           Text="{Binding ElementName=progressBar,Path=Value}"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock >/</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock x:Name="pbAllItemsCount" 
+                           Text="{Binding ElementName=progressBar,Path=Maximum}" />
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>

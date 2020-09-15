@@ -24,5 +24,25 @@ namespace BooksRenamer
         {
             InitializeComponent();
         }
+        private void btnOverview_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void btnSearchBooks_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void btnSearchNewTitle_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void btnRename_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void rbtnAllFolders_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
