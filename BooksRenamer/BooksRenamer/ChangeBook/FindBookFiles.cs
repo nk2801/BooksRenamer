@@ -1,8 +1,8 @@
-﻿using BooksRenamer.ChangeBook.BookInfo;
+﻿using ChangeBook.BookInfo;
 using System.Collections.Generic;
 using System.IO;
 
-namespace BooksRenamer.ChangeBook
+namespace ChangeBook
 {
     /// <summary>
     /// Для нахождения всех файлов книг в каталоге и подпапках

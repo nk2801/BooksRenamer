@@ -1,5 +1,5 @@
-﻿using BooksRenamer.ChangeBook.BookInfo;
-using BooksRenamer.ChangeBook.BookInfo.Interface;
+﻿using ChangeBook.BookInfo;
+using ChangeBook.BookInfo.Interface;
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Resolvers;
 
-namespace BooksRenamer.ChangeBook
+namespace ChangeBook
 {
     /// <summary>
     /// Для нахождения автора и названия книги в файле книги

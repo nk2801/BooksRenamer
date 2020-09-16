@@ -1,4 +1,4 @@
-﻿namespace BooksRenamer.ChangeBook.BookInfo
+﻿namespace ChangeBook.BookInfo
 {
     /// <summary>
     /// Главная информация о файле FB2

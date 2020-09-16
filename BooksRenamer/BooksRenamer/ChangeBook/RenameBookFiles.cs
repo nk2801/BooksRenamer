@@ -1,4 +1,4 @@
-﻿using BooksRenamer.ChangeBook.BookInfo;
+﻿using ChangeBook.BookInfo;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BooksRenamer.ChangeBook
+namespace ChangeBook
 {
     /// <summary>
     /// Для изменения старого имени файла книги на новое в каталоге

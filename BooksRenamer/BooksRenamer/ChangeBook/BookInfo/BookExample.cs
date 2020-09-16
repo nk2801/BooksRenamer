@@ -1,10 +1,10 @@
-﻿using BooksRenamer.ChangeBook.BookInfo.Interface;
+﻿using ChangeBook.BookInfo.Interface;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace BooksRenamer.ChangeBook.BookInfo
+namespace ChangeBook.BookInfo
 {
     /// <summary>
     /// Абстрактный класс, включающий информацию о книге и о файле
