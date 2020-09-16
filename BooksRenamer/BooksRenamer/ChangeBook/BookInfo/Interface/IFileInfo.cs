@@ -1,4 +1,4 @@
-﻿namespace BooksRenamer.ChangeBook.BookInfo.Interface
+﻿namespace ChangeBook.BookInfo.Interface
 {
     /// <summary>
     /// Содержит всю информацию для правильной работы с файлом книги
