@@ -87,8 +87,16 @@
                       Margin="0 35 0 0"
                       AutoGenerateColumns="False">
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="Check"  Binding="{Binding Path=IsChecked}" Width="45"/>
-                    <DataGridTextColumn Header="Ошибка" Binding="{Binding Path=Exception}" Width="55" />
+                    <DataGridCheckBoxColumn Binding="{Binding Path=IsChecked}" Width="26">
+                        <DataGridCheckBoxColumn.Header>
+                            <Image Source="Images/checked.png" MaxHeight="16"/>
+                        </DataGridCheckBoxColumn.Header>
+                    </DataGridCheckBoxColumn>
+                    <DataGridTextColumn Binding="{Binding Path=Exception}" Width="26">
+                        <DataGridTextColumn.Header>
+                            <Image Source="Images/error.png" MaxHeight="16" ToolTip="Ошбика"/>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
                     <DataGridTextColumn Header="Каталог" Binding="{Binding Path=MainFolder}" Width="100" MaxWidth="200" />
                     <DataGridTextColumn Header="Название файла" Binding="{Binding Path=FileName}" Width="*" />
                     <DataGridTextColumn Header="Формат" Binding="{Binding Path=Extension}" Width="55" />
