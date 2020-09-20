@@ -85,27 +85,88 @@
                       Grid.Row="0" 
                       Grid.RowSpan="5" 
                       Margin="0 35 0 0"
+                      AlternatingRowBackground="Gainsboro"
                       AutoGenerateColumns="False">
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Binding="{Binding Path=IsChecked}" Width="26">
-                        <DataGridCheckBoxColumn.Header>
-                            <Image Source="Images/checked.png" MaxHeight="16"/>
-                        </DataGridCheckBoxColumn.Header>
-                    </DataGridCheckBoxColumn>
-                    <DataGridTextColumn Binding="{Binding Path=Exception}" Width="26">
-                        <DataGridTextColumn.Header>
-                            <Image Source="Images/error.png" MaxHeight="16" ToolTip="Ошбика"/>
-                        </DataGridTextColumn.Header>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="Каталог" Binding="{Binding Path=MainFolder}" Width="100" MaxWidth="200" />
-                    <DataGridTextColumn Header="Название файла" Binding="{Binding Path=FileName}" Width="*" />
-                    <DataGridTextColumn Header="Формат" Binding="{Binding Path=Extension}" Width="55" />
-                    <DataGridTextColumn Header="Название книги" Binding="{Binding Path=Title}" Width="*"/>
-                    <DataGridTextColumn Header="Автор" Binding="{Binding Path=Author}" Width="*" />
+
+                    <DataGridTemplateColumn x:Name="DGChecked" SortMemberPath="IsChecked" MinWidth="26" MaxWidth="26">
+                        <DataGridTemplateColumn.Header>
+                            <Image Source="Images/checked.png" ToolTip="Checked"/>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Path=IsChecked, 
+                                                              Mode=TwoWay, 
+                                                              UpdateSourceTrigger=PropertyChanged}" 
+                                          HorizontalAlignment="Center" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn x:Name="DGException" SortMemberPath="Exception" MinWidth="26" MaxWidth="26">
+                        <DataGridTemplateColumn.Header>
+                            <Image Source="Images/error.png" ToolTip="Error"/>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image x:Name="DGExceptionImage" 
+                                       Source="Images/error.png" 
+                                       ToolTip="{Binding Path=Exception}" 
+                                       Height="14" 
+                                       HorizontalAlignment="Center"/>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Path=Exception}" Value="{x:Null}">
+                                        <Setter TargetName="DGExceptionImage" Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn x:Name="DGMainFolder" Header="Каталог" SortMemberPath="MainFolder" Width="100" MinWidth="20">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=MainFolder}" ToolTip="{Binding Path=MainFolder}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn x:Name="DGFileName" Header="Название файла" SortMemberPath="FileName" Width="*" MinWidth="20">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=FileName}" ToolTip="{Binding Path=FileName}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn x:Name="DGExtension" Header="Формат" SortMemberPath="Extension" Width="55" MinWidth="20">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Extension}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn x:Name="DGTitle" Header="Название книги" SortMemberPath="Title" Width="*" MinWidth="20">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Title}" ToolTip="{Binding Path=Title}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn x:Name="DGAuthor" Header="Автор" SortMemberPath="Author" Width="*" MinWidth="20">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Author}" ToolTip="{Binding Path=Author}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
-        
+
         <StatusBar VerticalAlignment="Bottom"
                    Height="25">
             <StatusBarItem>
