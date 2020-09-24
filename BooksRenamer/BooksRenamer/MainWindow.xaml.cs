@@ -1,4 +1,5 @@
-﻿using ChangeBook.BookInfo;
+﻿using ChangeBook;
+using ChangeBook.BookInfo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +15,11 @@ namespace BooksRenamer
     /// </summary>
     public partial class MainWindow : Window
     {
-        List<BookExample> library;
+        Library library;
         string directory;
-        bool allFolders;
+        bool allFolders = false;
         public MainWindow()
         {
-            //library = new List<BookExample>();
-            allFolders = false;
             InitializeComponent();
         }
         /// <summary>
@@ -28,86 +27,40 @@ namespace BooksRenamer
         /// </summary>
         private void btnOverview_Click(object sender, RoutedEventArgs e)
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            DialogResult dRes = fbd.ShowDialog();
-            if (dRes == System.Windows.Forms.DialogResult.OK)
-            {
-                tbDirectory.Text = directory = fbd.SelectedPath.ToString();
-            }
+            //FolderBrowserDialog fbd = new FolderBrowserDialog();
+            //DialogResult dRes = fbd.ShowDialog();
+            //if (dRes == System.Windows.Forms.DialogResult.OK)
+            //{
+            //    tbDirectory.Text = directory = fbd.SelectedPath.ToString();
+            //}
+            tbDirectory.Text = directory = @"D:\!Books";
+            library = new Library(directory, allFolders);
         }
         /// <summary>
         /// Нажатие кнопки "Поиск книг"
-        /// </summary>
-        private void btnSearchBooks_Click(object sender, RoutedEventArgs e)
-        {
-            FindBooks();
-        }
-        /// <summary>
         /// Асинхронное выполнение поиска книг в папках
         /// </summary>
-        private async void FindBooks()
+        private async void btnSearchBooks_Click(object sender, RoutedEventArgs e)
         {
-            await Task.Run(() =>
-            {
-                library = ChangeBook.FindBookFiles.FindBookFilesInDirectory(directory, allFolders);
-            }
-            );
-            MainDataGrid.ItemsSource = library;
-            progressBar.Maximum = library.Count();
-            progressBar.Value = 0;
+            await Task.Run(() => library.FindBooks());
+            DataContext = library;
+            MainDataGrid.Items.Refresh();
         }
         /// <summary>
         /// Нажатие кнопки "Поиск названий книг"
-        /// </summary>
-        private void btnSearchNewTitle_Click(object sender, RoutedEventArgs e)
-        {
-            FindBookName();
-        }
-        /// <summary>
         /// Асинхронное выполнение поиска названий книг и авторов
         /// </summary>
-        private async void FindBookName()
+        private async void btnSearchNewTitle_Click(object sender, RoutedEventArgs e)
         {
-            await Task.Run(() =>
-            {
-                foreach (var book in library)
-                {
-                    ChangeBook.FindNewBookInfo.FindNewName(book);
-                    Dispatcher.Invoke(DispatcherPriority.Normal, new Action(MoveProgressBar));
-                }
-            }
-            );
+            await Task.Run(() => library.FindBookInfo());
         }
         /// <summary>
         /// Нажатие кнопки "Переименовать"
-        /// </summary>
-        private void btnRename_Click(object sender, RoutedEventArgs e)
-        {
-            Rename();
-        }
-        /// <summary>
         /// Асинхронное выполнение переименовывания файлов книг
         /// </summary>
-        private async void Rename()
+        private async void btnRename_Click(object sender, RoutedEventArgs e)
         {
-            progressBar.Maximum = library.Count(x => x.IsChecked == true);
-            progressBar.Value = 0;
-            await Task.Run(() =>
-            {
-                foreach (var book in library)
-                {
-                    ChangeBook.RenameBookFiles.RenameFiles(book);
-                    Dispatcher.Invoke(DispatcherPriority.Normal, new Action(MoveProgressBar));
-                }
-            }
-            );
-        }
-        /// <summary>
-        /// Для ассинхронного изменения значения прогрессбара
-        /// </summary>
-        private void MoveProgressBar()
-        {
-            progressBar.Value++;
+            await Task.Run(() => library.Rename());
         }
         /// <summary>
         /// Изменение значения проверки всех папок или нет
@@ -116,11 +69,17 @@ namespace BooksRenamer
         {
             if ((sender as System.Windows.Controls.RadioButton).Name == "rbtnOnlyRoot")
             {
-                allFolders = false;
+                if (library == null)
+                    allFolders = false;
+                else
+                    library.AllFolders = false;
             }
             if ((sender as System.Windows.Controls.RadioButton).Name == "rbtnAlsoSubFolders")
             {
-                allFolders = true;
+                if (library == null)
+                    allFolders = true;
+                else
+                    library.AllFolders = true;
             }
         }
     }

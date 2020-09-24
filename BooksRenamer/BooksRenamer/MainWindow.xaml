@@ -80,6 +80,7 @@
             </StackPanel>
 
             <DataGrid x:Name="MainDataGrid" 
+                      ItemsSource="{Binding Books}"
                       Grid.Column="0" 
                       Grid.ColumnSpan="3"
                       Grid.Row="0" 
@@ -88,7 +89,6 @@
                       AlternatingRowBackground="Gainsboro"
                       AutoGenerateColumns="False">
                 <DataGrid.Columns>
-
                     <DataGridTemplateColumn x:Name="DGChecked" SortMemberPath="IsChecked" MinWidth="26" MaxWidth="26">
                         <DataGridTemplateColumn.Header>
                             <Image Source="Images/checked.png" ToolTip="Checked"/>
@@ -98,7 +98,8 @@
                                 <CheckBox IsChecked="{Binding Path=IsChecked, 
                                                               Mode=TwoWay, 
                                                               UpdateSourceTrigger=PropertyChanged}" 
-                                          HorizontalAlignment="Center" />
+                                          HorizontalAlignment="Center" 
+                                          ToolTip="{Binding Path=IsChecked}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -177,18 +178,32 @@
                              HorizontalAlignment="Left" 
                              Height="18" 
                              Width="150" 
-                             LargeChange="0" />
+                             Minimum="0"
+                             Value="{Binding Path=CountEnd, Mode=OneWay}"
+                             Maximum="{Binding Path=CountCheckedNow, Mode=OneWay}"/>
             </StatusBarItem>
             <StatusBarItem>
                 <TextBlock x:Name="pbItemsCount" 
-                           Text="{Binding ElementName=progressBar,Path=Value}"/>
+                           Text="{Binding ElementName=progressBar, Path=Value}"
+                           ToolTip="Обработано книг"/>
             </StatusBarItem>
             <StatusBarItem>
                 <TextBlock >/</TextBlock>
             </StatusBarItem>
             <StatusBarItem>
+                <TextBlock x:Name="pbAllItemsCountChecked" 
+                           Text="{Binding ElementName=progressBar, Path=Maximum}"
+                           ToolTip="Выбрано книг для обработки"/>
+            </StatusBarItem>
+            <StatusBarItem>
                 <TextBlock x:Name="pbAllItemsCount" 
-                           Text="{Binding ElementName=progressBar,Path=Maximum}" />
+                           HorizontalAlignment="Right"
+                           Text="Всего книг в списке:" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock x:Name="pbAllItemsCount1" 
+                           HorizontalAlignment="Right"                           
+                           Text="{Binding Path=CountAll, Mode=OneWay}" />
             </StatusBarItem>
         </StatusBar>
     </Grid>

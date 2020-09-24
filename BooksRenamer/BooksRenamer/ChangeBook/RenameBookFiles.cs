@@ -15,11 +15,12 @@ namespace ChangeBook
     {
         /// <summary>
         /// Переименовывает книгу в каталоге
+        /// Если новый путь такой же как старый - переименование не производится.
         /// </summary>
         /// <param name="book">Книга, которую надо переименовать</param>
         public static void RenameFiles(BookExample book)
         {
-            if (book.IsChecked)
+            if (book.IsChecked && book.BookFullName != book.NewBookFullName)
                 try
                 {
                     File.Move(book.BookFullName, book.NewBookFullName);

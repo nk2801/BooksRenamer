@@ -22,7 +22,7 @@ namespace ChangeBook
         /// <param name="directory">Путь в каталоге, где будет проверяться наличие книг</param>
         /// <param name="allFolders">Если true, будут проверены подпапки</param>
         /// <returns></returns>
-        public static List<BookExample> FindBookFilesInDirectory(string directory, bool allFolders)
+        public static List<string> FindBookFilesInDirectory(string directory, bool allFolders)
         {
             return ScanFolders(new DirectoryInfo(directory), allFolders);
         }
@@ -32,9 +32,9 @@ namespace ChangeBook
         /// <param name="dInfo">Путь в каталоге, где будет проверяться наличие книг</param>
         /// <param name="allFolders">Если true, будут проверены все подпапки</param>
         /// <returns></returns>
-        private static List<BookExample> ScanFolders(DirectoryInfo dInfo, bool allFolders)
+        private static List<string> ScanFolders(DirectoryInfo dInfo, bool allFolders)
         {
-            List<BookExample> library = new List<BookExample>();
+            List<string> library = new List<string>();
             try
             {
                 library = AddBookInLibrary(dInfo);
@@ -52,14 +52,14 @@ namespace ChangeBook
         /// </summary>
         /// <param name="dInfo">Путь в каталоге, где будет проверяться наличие книг</param>
         /// <returns></returns>
-        private static List<BookExample> AddBookInLibrary(DirectoryInfo dInfo)
+        private static List<string> AddBookInLibrary(DirectoryInfo dInfo)
         {
-            List<BookExample> lib = new List<BookExample>();
+            List<string> lib = new List<string>();
             foreach (var file in dInfo.GetFiles())
             {
                 if (System.Text.RegularExpressions.Regex.IsMatch(file.Name, bookExtPattern))
                 {
-                    lib.Add(BookExample.CreateBook(file.FullName));
+                    lib.Add(file.FullName);
                 }
             }
             return lib;
