@@ -18,7 +18,7 @@ namespace ChangeBook.BookInfo
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Событие, сообщает, если какие-либо данные были изменены
+        /// Событие изменения свойства для своевременного отображения
         /// </summary>
         /// <param name="propertyName"></param>
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -39,7 +39,7 @@ namespace ChangeBook.BookInfo
                 case ".epub":
                     return new BookEpub(path);
                 default:
-                    return null;//throw new ArgumentException();
+                    return null;
             }
         }
         /// <summary>
@@ -48,7 +48,7 @@ namespace ChangeBook.BookInfo
         /// <param name="path">Полный путь к книге в каталоге</param>
         protected BookExample(string path)
         {
-            BookFullName = path;
+            NewBookFullName = BookFullName = path;
             Directory = Path.GetDirectoryName(BookFullName);
             FileName = Path.GetFileNameWithoutExtension(BookFullName);
             Extension = Path.GetExtension(BookFullName).ToLower();
@@ -56,6 +56,7 @@ namespace ChangeBook.BookInfo
             Author = "";
             Title = "";
             IsChecked = true;
+
         }
 
         #region Properties
@@ -73,7 +74,16 @@ namespace ChangeBook.BookInfo
         public bool IsChecked
         {
             get { return isChecked; }
-            set { isChecked = value; NotifyPropertyChanged(); }
+            set
+            {
+                //Нельзя изменить, если есть ошибка. 
+                if (value == true && Exception != null)
+                    return;
+                isChecked = value;
+                //Для оповещения об изменении значения. Первый - в UI, второй - в лист library
+                NotifyPropertyChanged();
+                NotifyPropertyChanged($"IsChecked{value}");
+            }
         }
         public string Author
         {
@@ -98,7 +108,6 @@ namespace ChangeBook.BookInfo
             else if (Exception == null)
             {
                 Exception = "Данные об авторе и/или названии книги отсуствуют";
-                NewBookFullName = BookFullName;
             }
         }
 
