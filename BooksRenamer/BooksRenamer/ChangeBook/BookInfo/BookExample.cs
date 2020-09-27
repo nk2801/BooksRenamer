@@ -48,7 +48,7 @@ namespace ChangeBook.BookInfo
         /// <param name="path">Полный путь к книге в каталоге</param>
         protected BookExample(string path)
         {
-            BookFullName = path;
+            NewBookFullName = BookFullName = path;
             Directory = Path.GetDirectoryName(BookFullName);
             FileName = Path.GetFileNameWithoutExtension(BookFullName);
             Extension = Path.GetExtension(BookFullName).ToLower();
@@ -56,6 +56,7 @@ namespace ChangeBook.BookInfo
             Author = "";
             Title = "";
             IsChecked = true;
+
         }
 
         #region Properties
@@ -107,7 +108,6 @@ namespace ChangeBook.BookInfo
             else if (Exception == null)
             {
                 Exception = "Данные об авторе и/или названии книги отсуствуют";
-                NewBookFullName = BookFullName;
             }
         }
 

@@ -11,15 +11,26 @@ using System.Threading.Tasks;
 namespace ChangeBook
 {
     /// <summary>
+    /// Состояние работы приложения
+    /// </summary>
+    public enum State
+    {
+        Start, Working, FindFiles, FindTitle, Rename, End
+    }
+    /// <summary>
     /// Содержит в себе все данные для отображения в UI
     /// </summary>
     class Library : INotifyPropertyChanged
     {
         List<BookExample> library;
+        string directory;
+
         int countChecked = 0;
         int countAll = 0;
         int countEnd = 0;
         int countCheckedNow = 0;
+
+        State state;
 
         public event PropertyChangedEventHandler PropertyChanged;
         /// <summary>
@@ -32,29 +43,91 @@ namespace ChangeBook
         /// <summary>
         /// Создание нового экземпляра класса
         /// </summary>
-        /// <param name="dir">Каталог, в котором происходит поиск книг</param>
-        /// <param name="allFolders">True - проверять все подкаталоги. False - проверять только выбранную папку</param>
-        public Library(string dir, bool allFolders)
+        public Library()
         {
             library = new List<BookExample>();
-            Directory = dir;
-            AllFolders = allFolders;
+            directory = "";
+            AllFolders = false;
+            ChangeState = State.Start;
         }
         /// <summary>
         /// Поиск книг в выбранном каталоге
         /// Книги создаются здесь, чтобы выполнить подписку на событие изменения Checked книги, проверять ее далее или нет
         /// </summary>
-        public void FindBooks()
+        public async void FindBooks(CancellationToken token)
         {
+            BeforeStart();
             library.Clear();
-            foreach (var book in FindBookFiles.FindBookFilesInDirectory(Directory, AllFolders))
+            await Task.Run(() =>
             {
-                BookExample be = BookExample.CreateBook(book);
-                be.PropertyChanged += this.IsChecked;
-                Books.Add(be);
-            }
-            CountChecked = CountCheckedNow = CountAll = Books.Count;
+                foreach (var book in FindBookFiles.FindBookFilesInDirectory(Directory, AllFolders))
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        return;
+                    }
+                    BookExample be = BookExample.CreateBook(book);
+                    be.PropertyChanged += IsChecked;
+                    Books.Add(be);
+                }
+            });
+            CountChecked = CountAll = Books.Count;
+            ChangeState = State.FindTitle;
+        }
+        /// <summary>
+        /// Поиск новых данных о выбранных книгах
+        /// </summary>
+        public async void FindBookInfo(CancellationToken token)
+        {
+            BeforeStart();
+            await Task.Run(() =>
+            {
+                for (int i = 0; i < countAll; i++)
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        return;
+                    }
+                    if (library[i].IsChecked)
+                    {
+                        FindNewBookInfo.FindNewName(library[i]);
+                        CountEnd++;
+                    }
+                }
+            });
+            ChangeState = State.Rename;
+        }
+        /// <summary>
+        /// переименование выбранных книг
+        /// </summary>
+        public async void Rename(CancellationToken token)
+        {
+            BeforeStart();
+            await Task.Run(() =>
+            {
+                for (int i = 0; i < countAll; i++)
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        return;
+                    }
+                    if (library[i].IsChecked)
+                    {
+                        RenameBookFiles.RenameFiles(library[i]);
+                        CountEnd++;
+                    }
+                }
+            });
+            ChangeState = State.End;
+        }
+        /// <summary>
+        /// Работа, выполняемая перед началом каждого шага работы с файлами
+        /// </summary>
+        private void BeforeStart()
+        {
+            ChangeState = State.Working;
             CountEnd = 0;
+            CountCheckedNow = CountChecked;
         }
         /// <summary>
         /// Проверяет событие, если связано с изменением checked книги - изменяет значение в UI
@@ -70,45 +143,23 @@ namespace ChangeBook
                 CountChecked--;
             }
         }
-        /// <summary>
-        /// Поиск новых данных о выбранных книгах
-        /// </summary>
-        public void FindBookInfo()
-        {
-            CountEnd = 0;
-            CountCheckedNow = CountChecked;
-            foreach (var book in library)
-            {
-                if (book.IsChecked)
-                {
-                    FindNewBookInfo.FindNewName(book);
-                    CountEnd++;
-                }
-            }
-        }
-        /// <summary>
-        /// переименование выбранных книг
-        /// </summary>
-        public void Rename()
-        {
-            CountEnd = 0;
-            CountCheckedNow = CountChecked;
-            foreach (var book in library)
-            {
-                if (book.IsChecked)
-                {
-                    RenameBookFiles.RenameFiles(book);
-                    CountEnd++;
-                }
-            }
-        }
         public bool AllFolders { get; set; }
-        public string Directory { get; private set; }
+        public string Directory
+        {
+            get { return directory; }
+            set
+            {
+                directory = System.IO.Directory.Exists(value) ? value : directory;
+                if (ChangeState == State.Start || ChangeState == State.End)
+                    ChangeState = State.FindFiles;
+                NotifyPropertyChanged();
+            }
+        }
         public List<BookExample> Books { get { return library; } private set { library = value; NotifyPropertyChanged(); } }
         public int CountAll { get { return countAll; } private set { countAll = value; NotifyPropertyChanged(); } }
-        public int CountChecked { get { return countChecked; } private set { countChecked = value; } }
+        public int CountChecked { get { return countChecked; } private set { countChecked = value; NotifyPropertyChanged(); } }
         public int CountCheckedNow { get { return countCheckedNow; } private set { countCheckedNow = value; NotifyPropertyChanged(); } }
         public int CountEnd { get { return countEnd; } private set { countEnd = value; NotifyPropertyChanged(); } }
-
+        public State ChangeState { get { return state; } private set { state = value; NotifyPropertyChanged(); } }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BooksRenamer"
         mc:Ignorable="d"
-        Title="Books Renamer" Height="450" Width="800">
+        Title="Books Renamer" Height="450" Width="800" Closing="Window_Closing">
 
     <Window.Resources>
         <Style x:Key="CommonStyle" TargetType="FrameworkElement">
@@ -54,7 +54,7 @@
                         Width="70"
                         DockPanel.Dock="Right"/>
                 <TextBox x:Name="tbDirectory"
-                         Text=""/>
+                         Text="{Binding Path=Directory, Mode=TwoWay}"/>
             </DockPanel>
 
             <StackPanel Orientation="Vertical" 
@@ -62,7 +62,7 @@
                         Grid.RowSpan="5">
                 <Button Content="Поиск книг по каталогу" 
                         x:Name="btnSearchBooks" 
-                        Click="btnSearchBooks_Click"/>
+                        Click="btn_Click"/>
                 <RadioButton Content="Только корневой каталог" 
                              x:Name="rbtnOnlyRoot" 
                              IsChecked="True"
@@ -73,10 +73,10 @@
                              Checked="rbtnAllFolders_Checked"/>
                 <Button Content="Поиск названий книг" 
                         x:Name="btnSearchNewTitle"
-                        Click="btnSearchNewTitle_Click"/>
+                        Click="btn_Click"/>
                 <Button Content="Переименовать книги"
                         x:Name="btnRename"  
-                        Click="btnRename_Click"/>
+                        Click="btn_Click"/>
             </StackPanel>
 
             <DataGrid x:Name="MainDataGrid" 
@@ -171,39 +171,37 @@
         <StatusBar VerticalAlignment="Bottom"
                    Height="25">
             <StatusBarItem>
-                <TextBlock>Обработка запроса:</TextBlock>
+                <TextBlock>Выполнение:</TextBlock>
             </StatusBarItem>
             <StatusBarItem>
-                <ProgressBar x:Name="progressBar" 
+                <Grid Width="150">
+                    <ProgressBar x:Name="progressBar" 
                              HorizontalAlignment="Left" 
                              Height="18" 
                              Width="150" 
                              Minimum="0"
                              Value="{Binding Path=CountEnd, Mode=OneWay}"
                              Maximum="{Binding Path=CountCheckedNow, Mode=OneWay}"/>
-            </StatusBarItem>
-            <StatusBarItem>
-                <TextBlock x:Name="pbItemsCount" 
-                           Text="{Binding ElementName=progressBar, Path=Value}"
-                           ToolTip="Обработано книг"/>
-            </StatusBarItem>
-            <StatusBarItem>
-                <TextBlock >/</TextBlock>
-            </StatusBarItem>
-            <StatusBarItem>
-                <TextBlock x:Name="pbAllItemsCountChecked" 
-                           Text="{Binding ElementName=progressBar, Path=Maximum}"
-                           ToolTip="Выбрано книг для обработки"/>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0}/{1}">
+                                <Binding Path="Value" ElementName="progressBar" />
+                                <Binding Path="Maximum" ElementName="progressBar" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </Grid>
             </StatusBarItem>
             <StatusBarItem>
                 <TextBlock x:Name="pbAllItemsCount" 
-                           HorizontalAlignment="Right"
-                           Text="Всего книг в списке:" />
+                           Text="Отмеченные книги:" />
             </StatusBarItem>
             <StatusBarItem>
-                <TextBlock x:Name="pbAllItemsCount1" 
-                           HorizontalAlignment="Right"                           
-                           Text="{Binding Path=CountAll, Mode=OneWay}" />
+                <TextBlock x:Name="pbAllItemsCountChecked" 
+                           Text="{Binding Path=CountChecked}"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock x:Name="tbState" />
             </StatusBarItem>
         </StatusBar>
     </Grid>
